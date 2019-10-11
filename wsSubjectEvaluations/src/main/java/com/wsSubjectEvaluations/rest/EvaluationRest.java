@@ -25,47 +25,52 @@ public class EvaluationRest {
 	EvaluationServ eServ;
 	List<Evaluation> eList = new ArrayList<Evaluation>();
 	
+
 	@GetMapping
-	public ResponseEntity<Object> findAll(){
+	public ResponseEntity<Object> findAll() {
 		try {
 			eList = eServ.findAll();
-			if(eList.size()>0) {
-				return new ResponseEntity<>(eList,HttpStatus.OK);
+			//Checking if the Evaluation List is not null to send a response
+			if (eList.size() > 0) {
+				return new ResponseEntity<>(eList, HttpStatus.OK);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST.getReasonPhrase(),HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST.getReasonPhrase(), HttpStatus.BAD_REQUEST);
 		}
 		return null;
 	}
+
 	@GetMapping("findById/{id}")
-	public ResponseEntity<Object> findById(@PathVariable("id") int id){
-		Evaluation ev= new Evaluation();
-	try {
-		ev= eServ.SelectById(id);
-		return new ResponseEntity<>(ev,HttpStatus.OK);
-	} catch (Exception e) {
-		e.printStackTrace();
-		return new ResponseEntity<>("None",HttpStatus.BAD_REQUEST);
+	public ResponseEntity<Object> findById(@PathVariable("id") int id) {
+		Evaluation ev = new Evaluation();
+		try {
+			ev = eServ.SelectById(id);
+			return new ResponseEntity<>(ev, HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>("None", HttpStatus.BAD_REQUEST);
+		}
 	}
-	}
+
 	@PostMapping("/addEvaluation")
 	public ResponseEntity<Object> addSubject(@RequestBody Evaluation eva) {
 		Evaluation ev = eServ.addEvaluation(eva);
-		if(eva!=null) {
-			System.out.println("IDDDDDDDDDD  "+eva.getId());
-			return new ResponseEntity<>("Added successfully",HttpStatus.OK);
-		}else {
-			return new ResponseEntity<>("Error",HttpStatus.NOT_FOUND);
+		if (eva != null) {
+			System.out.println("IDDDDDDDDDD  " + eva.getId());
+			return new ResponseEntity<>("Added successfully", HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>("Error", HttpStatus.NOT_FOUND);
 		}
 	}
+
 	@PutMapping("/updateEvaluation")
 	public ResponseEntity<Object> updateSubject(@RequestBody Evaluation eva) {
 		Evaluation ev = eServ.updateEvaluation(eva);
-		if(eva!=null) {
-			return new ResponseEntity<>("Updated successfully",HttpStatus.OK);
-		}else {
-			return new ResponseEntity<>("Error",HttpStatus.NOT_FOUND);
+		if (eva != null) {
+			return new ResponseEntity<>("Updated successfully", HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>("Error", HttpStatus.NOT_FOUND);
 		}
 	}
 }
