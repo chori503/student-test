@@ -21,6 +21,8 @@ import com.wsSubjectEvaluations.service.EvaluationServ;
 @RestController
 @RequestMapping("/evaluation")
 public class EvaluationRest {
+	
+//	Injection to the repository Class
 	@Autowired
 	EvaluationServ eServ;
 	List<Evaluation> eList = new ArrayList<Evaluation>();
@@ -46,7 +48,7 @@ public class EvaluationRest {
 		Evaluation ev = new Evaluation();
 		try {
 			ev = eServ.SelectById(id);
-			return new ResponseEntity<>(ev, HttpStatus.OK);
+			return new ResponseEntity<>(ev, HttpStatus.BAD_REQUEST);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseEntity<>("None", HttpStatus.BAD_REQUEST);
@@ -57,7 +59,7 @@ public class EvaluationRest {
 	public ResponseEntity<Object> addSubject(@RequestBody Evaluation eva) {
 		Evaluation ev = eServ.addEvaluation(eva);
 		if (eva != null) {
-			System.out.println("IDDDDDDDDDD  " + eva.getId());
+			System.out.println("IDDDDDDDDDD  " + ev.getId());
 			return new ResponseEntity<>("Added successfully", HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>("Error", HttpStatus.NOT_FOUND);
