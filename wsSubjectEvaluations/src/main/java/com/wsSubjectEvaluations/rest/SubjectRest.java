@@ -1,6 +1,8 @@
 package com.wsSubjectEvaluations.rest;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.websocket.server.PathParam;
@@ -17,63 +19,90 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.wsSubjectEvaluations.entities.Subject;
+import com.wsSubjectEvaluations.models.ResponseObject;
 import com.wsSubjectEvaluations.models.SubjectModel;
 import com.wsSubjectEvaluations.service.SubjectServ;
 
 @RestController
 @RequestMapping("/subjects")
 public class SubjectRest {
-	
+
 	@Autowired
 	SubjectServ sServ;
-	
+
+	// Haciendo una lista de tipo subject para mostrar todos los registros
 	@GetMapping
-	public ResponseEntity<Object> findAll(){
+	public ResponseEntity<Object> findAll() {
 		List<Subject> subjectList = new ArrayList<Subject>();
 		subjectList = sServ.findAll();
-		SubjectModel sm = new SubjectModel();
-		List<SubjectModel> smList = new ArrayList<SubjectModel>();
-		
-		for(Subject s : subjectList) {
-		sm.setId(s.getId());
-		sm.setName(s.getName());
-		sm.setState(s.getState());
-		sm.setDateCreation(s.getDateCreation());
-		sm.setDateMerge(s.getDateMerge());
-		sm.setDateRemoved(s.getDateRemoved());
-		smList.add(sm);
+		// validando si hay registros muestra un OK sino muestra un bad request
+		if (subjectList.size() > 0) {
+			ResponseObject rObject = new ResponseObject(new Timestamp(new Date().getTime()), HttpStatus.OK, "Success",
+					"subjects", subjectList);
+
+			return new ResponseEntity<>(rObject, HttpStatus.OK);
+
+		} else {
+			ResponseObject rObject = new ResponseObject(new Timestamp(new Date().getTime()), HttpStatus.BAD_REQUEST,
+					"Faillure", "subjects", subjectList);
+
+			return new ResponseEntity<>(rObject, HttpStatus.BAD_REQUEST);
+
 		}
-		return new ResponseEntity<>(subjectList,HttpStatus.OK);
 	}
-	@GetMapping("findById/{id}")
-	public ResponseEntity<Object> findById(@PathVariable("id") int id){
-	System.out.println("SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS");
+
+	@GetMapping("/findById/{id}")
+	public ResponseEntity<Object> findById(@PathVariable("id") int id) {
+		System.out.println("SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS");
 		Subject s = new Subject();
-	try {
-		s= sServ.selectById(id);
-		return new ResponseEntity<>(s,HttpStatus.OK);
-	} catch (Exception e) {
-		e.printStackTrace();
-		return new ResponseEntity<>("None",HttpStatus.BAD_REQUEST);
+		try {
+			s = sServ.selectById(id);
+			if (null != s) {
+				ResponseObject rObject = new ResponseObject(new Timestamp(new Date().getTime()), HttpStatus.OK,
+						"Success", "/findById/{id}", s);
+
+				return new ResponseEntity<>(rObject, HttpStatus.OK);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			ResponseObject rObject = new ResponseObject(new Timestamp(new Date().getTime()), HttpStatus.BAD_REQUEST,
+					"Faillure", "/findById/{id}", s);
+
+			return new ResponseEntity<>(rObject, HttpStatus.BAD_REQUEST);
+
+		}
+		return null;
 	}
-	}
+
 	@PostMapping("/addSubject")
 	public ResponseEntity<Object> addSubject(@RequestBody Subject sub) {
-		Subject s =sServ.addSubject(sub);
-		if(s!=null) {
-			System.out.println("IDDDDDDDDDD  "+s.getId());
-			return new ResponseEntity<>("Added successfully",HttpStatus.OK);
-		}else {
-			return new ResponseEntity<>("Error",HttpStatus.NOT_FOUND);
+		Subject s = sServ.addSubject(sub);
+		if (null != s) {
+			ResponseObject rObject = new ResponseObject(new Timestamp(new Date().getTime()), HttpStatus.OK, "Success",
+					"/addSubject", s);
+
+			return new ResponseEntity<>(rObject, HttpStatus.OK);
+		} else {
+			ResponseObject rObject = new ResponseObject(new Timestamp(new Date().getTime()), HttpStatus.BAD_REQUEST,
+					"Faillure", "/addSubject", s);
+
+			return new ResponseEntity<>(rObject, HttpStatus.BAD_REQUEST);
 		}
 	}
+
 	@PutMapping("/updateSubject")
 	public ResponseEntity<Object> updateSubject(@RequestBody Subject sub) {
-		Subject s =sServ.updateSubject(sub);
-		if(s!=null) {
-			return new ResponseEntity<>("Updated successfully",HttpStatus.OK);
-		}else {
-			return new ResponseEntity<>("Error",HttpStatus.NOT_FOUND);
+		Subject s = sServ.updateSubject(sub);
+		if (null != s) {
+			ResponseObject rObject = new ResponseObject(new Timestamp(new Date().getTime()), HttpStatus.OK, "Success",
+					"/updateSubject", s);
+
+			return new ResponseEntity<>(rObject, HttpStatus.OK);
+		} else {
+			ResponseObject rObject = new ResponseObject(new Timestamp(new Date().getTime()), HttpStatus.BAD_REQUEST,
+					"Faillure", "/updateSubject", s);
+
+			return new ResponseEntity<>(rObject, HttpStatus.BAD_REQUEST);
 		}
 	}
 

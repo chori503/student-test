@@ -8,11 +8,11 @@ import org.springframework.http.HttpStatus;
 public class ResponseObject {
 	// fecha, hora y minutos de la peticion http
 	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
-	private Date horaFecha;
+	private Date dateTime;
 	// el estatus de respuesta
 	private HttpStatus status;
 	// mensaje de respuesta
-	private String mensaje;
+	private String message;
 	// url de la peticion
 	private String path;
 	// lo que envio como respuesta a solicitud
@@ -24,20 +24,19 @@ public class ResponseObject {
 	}
 
 	public ResponseObject(Date date, HttpStatus status, String mensaje, String path, Object object) {
-		this.horaFecha = date;
+		this.dateTime = date;
 		this.status = status;
-		this.mensaje = mensaje;
+		this.message = mensaje;
 		this.path = path;
 		this.object = object;
 	}
 
-//getters and setters
-	public Date getHoraFecha() {
-		return horaFecha;
+	public Date getDateTime() {
+		return dateTime;
 	}
 
-	public void setHoraFecha(Date date) {
-		this.horaFecha = date;
+	public void setDateTime(Date dateTime) {
+		this.dateTime = dateTime;
 	}
 
 	public HttpStatus getStatus() {
@@ -48,12 +47,12 @@ public class ResponseObject {
 		this.status = status;
 	}
 
-	public String getMensaje() {
-		return mensaje;
+	public String getMessage() {
+		return message;
 	}
 
-	public void setMensaje(String mensaje) {
-		this.mensaje = mensaje;
+	public void setMessage(String message) {
+		this.message = message;
 	}
 
 	public String getPath() {
@@ -70,12 +69,5 @@ public class ResponseObject {
 
 	public void setObject(Object object) {
 		this.object = object;
-	}
-
-	// metodo
-	@Override
-	public String toString() {
-		return "ResponseEntity [horaFecha=" + horaFecha + ", status=" + status + ", mensaje=" + mensaje + ", path="
-				+ path + ", object=" + object + "]";
-	}
+	}	
 }

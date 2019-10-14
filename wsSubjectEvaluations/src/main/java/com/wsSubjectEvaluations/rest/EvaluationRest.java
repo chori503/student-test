@@ -1,6 +1,8 @@
 package com.wsSubjectEvaluations.rest;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,64 +17,87 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.wsSubjectEvaluations.entities.Evaluation;
-import com.wsSubjectEvaluations.entities.Subject;
+import com.wsSubjectEvaluations.models.ResponseObject;
 import com.wsSubjectEvaluations.service.EvaluationServ;
 
 @RestController
 @RequestMapping("/evaluation")
 public class EvaluationRest {
-	
+
 //	Injection to the repository Class
 	@Autowired
 	EvaluationServ eServ;
 	List<Evaluation> eList = new ArrayList<Evaluation>();
-	
 
 	@GetMapping
 	public ResponseEntity<Object> findAll() {
 		try {
 			eList = eServ.findAll();
-			//Checking if the Evaluation List is not null to send a response
+			// Checking if the Evaluation List is not null to send a response
 			if (eList.size() > 0) {
-				return new ResponseEntity<>(eList, HttpStatus.OK);
+				ResponseObject rObject = new ResponseObject(new Timestamp(new Date().getTime()), HttpStatus.OK,
+						"Success", "/evaluation", eList);
+
+				return new ResponseEntity<>(rObject, HttpStatus.OK);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST.getReasonPhrase(), HttpStatus.BAD_REQUEST);
+			ResponseObject rObject = new ResponseObject(new Timestamp(new Date().getTime()), HttpStatus.BAD_REQUEST,
+					"Faillure", "/evaluation", eList);
+
+			return new ResponseEntity<>(rObject, HttpStatus.BAD_REQUEST);
 		}
 		return null;
 	}
 
-	@GetMapping("findById/{id}")
+	@GetMapping("/findById/{id}")
 	public ResponseEntity<Object> findById(@PathVariable("id") int id) {
 		Evaluation ev = new Evaluation();
 		try {
 			ev = eServ.SelectById(id);
-			return new ResponseEntity<>(ev, HttpStatus.BAD_REQUEST);
+			if (null != ev) {
+				ResponseObject rObject = new ResponseObject(new Timestamp(new Date().getTime()), HttpStatus.OK,
+						"Success", "/findById/{id}", ev);
+
+				return new ResponseEntity<>(rObject, HttpStatus.OK);
+			}
 		} catch (Exception e) {
-			e.printStackTrace();
-			return new ResponseEntity<>("None", HttpStatus.BAD_REQUEST);
+			ResponseObject rObject = new ResponseObject(new Timestamp(new Date().getTime()), HttpStatus.BAD_REQUEST,
+					"Faillure", "/findById/{id}", ev);
+
+			return new ResponseEntity<>(rObject, HttpStatus.BAD_REQUEST);
 		}
+		return null;
 	}
 
 	@PostMapping("/addEvaluation")
 	public ResponseEntity<Object> addSubject(@RequestBody Evaluation eva) {
 		Evaluation ev = eServ.addEvaluation(eva);
-		if (eva != null) {
-			System.out.println("IDDDDDDDDDD  " + ev.getId());
-			return new ResponseEntity<>("Added successfully", HttpStatus.OK);
+		if (ev != null) {
+			ResponseObject rObject = new ResponseObject(new Timestamp(new Date().getTime()), HttpStatus.OK, "Success",
+					"/addEvaluation", ev);
+
+			return new ResponseEntity<>(rObject, HttpStatus.OK);
 		} else {
-			return new ResponseEntity<>("Error", HttpStatus.NOT_FOUND);
+			ResponseObject rObject = new ResponseObject(new Timestamp(new Date().getTime()), HttpStatus.BAD_REQUEST,
+					"Faillure", "/addEvaluation", ev);
+
+			return new ResponseEntity<>(rObject, HttpStatus.BAD_REQUEST);
 		}
 	}
 
 	@PutMapping("/updateEvaluation")
 	public ResponseEntity<Object> updateSubject(@RequestBody Evaluation eva) {
 		Evaluation ev = eServ.updateEvaluation(eva);
-		if (eva != null) {
-			return new ResponseEntity<>("Updated successfully", HttpStatus.OK);
+		if (ev != null) {
+			ResponseObject rObject = new ResponseObject(new Timestamp(new Date().getTime()), HttpStatus.OK, "Success",
+					"/addEvaluation", ev);
+
+			return new ResponseEntity<>(rObject, HttpStatus.OK);
 		} else {
-			return new ResponseEntity<>("Error", HttpStatus.NOT_FOUND);
+			ResponseObject rObject = new ResponseObject(new Timestamp(new Date().getTime()), HttpStatus.BAD_REQUEST,
+					"Faillure", "/addEvaluation", ev);
+
+			return new ResponseEntity<>(rObject, HttpStatus.BAD_REQUEST);
 		}
 	}
 }
