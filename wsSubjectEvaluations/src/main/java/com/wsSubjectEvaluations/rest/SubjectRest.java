@@ -50,6 +50,25 @@ public class SubjectRest {
 
 		}
 	}
+	@GetMapping("/show")
+	public ResponseEntity<Object> showAll() {
+		List<Subject> subjectList = new ArrayList<Subject>();
+		subjectList = sServ.findAll();
+		// validando si hay registros muestra un OK sino muestra un bad request
+		if (subjectList.size() > 0) {
+			ResponseObject rObject = new ResponseObject(new Timestamp(new Date().getTime()), HttpStatus.OK, "Success",
+					"subjects", subjectList);
+
+			return new ResponseEntity<>(subjectList, HttpStatus.OK);
+
+		} else {
+			ResponseObject rObject = new ResponseObject(new Timestamp(new Date().getTime()), HttpStatus.BAD_REQUEST,
+					"Faillure", "subjects", subjectList);
+
+			return new ResponseEntity<>(subjectList, HttpStatus.BAD_REQUEST);
+
+		}
+	}
 
 	@GetMapping("/findById/{id}")
 	public ResponseEntity<Object> findById(@PathVariable("id") int id) {
