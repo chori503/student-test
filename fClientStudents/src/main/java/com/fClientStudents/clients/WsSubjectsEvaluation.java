@@ -2,6 +2,7 @@ package com.fClientStudents.clients;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,13 +13,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import com.fClientStudents.model.EvaluationResponse;
 import com.fClientStudents.model.SubjectResponse;
 
-@FeignClient(name = "SubjectEvaluation" ,url = "https://wssubjectevaluations.herokuapp.com")
+@FeignClient(name = "SubjectEvaluation" ,url = "${feign.subjectEvaluationWs.url}")
 public interface WsSubjectsEvaluation {
-	@GetMapping("/subjects")
+	@GetMapping("/subjects/show")
 	public List<SubjectResponse> findAll();
 	
 	@GetMapping("/subjects/findById/{id}")
-	public SubjectResponse findById(@PathVariable Integer id);
+	public SubjectResponse findSubjectById(@PathVariable Integer id);
 	
 	@PostMapping("/subjects/addSubject")
 	public SubjectResponse addSubject(@RequestBody SubjectResponse sr);
@@ -32,10 +33,11 @@ public interface WsSubjectsEvaluation {
 	public List<EvaluationResponse> findAllEvaluation();
 	
 	@GetMapping("/evaluation/findById/{id}")
-	public EvaluationResponse findById(@PathVariable EvaluationResponse er);
+	public EvaluationResponse findEvaluationById(@PathVariable Integer id);
 	
-	@PostMapping("/evaluations/addEvaluation")
+	@PostMapping("/evaluation/addEvaluation")
 	public EvaluationResponse addEvaluation(@RequestBody EvaluationResponse er);
 	
-	
+	@PutMapping("/evaluation/updateEvaluation")
+	public EvaluationResponse updateEvaluation(@RequestBody EvaluationResponse er);
 }

@@ -49,6 +49,26 @@ public class EvaluationRest {
 		return null;
 	}
 
+	@GetMapping("/show")
+	public ResponseEntity<Object> showAll() {
+		try {
+			eList = eServ.findAll();
+			// Checking if the Evaluation List is not null to send a response
+			if (eList.size() > 0) {
+				ResponseObject rObject = new ResponseObject(new Timestamp(new Date().getTime()), HttpStatus.OK,
+						"Success", "/evaluation", eList);
+
+				return new ResponseEntity<>(eList, HttpStatus.OK);
+			}
+		} catch (Exception e) {
+			ResponseObject rObject = new ResponseObject(new Timestamp(new Date().getTime()), HttpStatus.BAD_REQUEST,
+					"Faillure", "/evaluation", eList);
+
+			return new ResponseEntity<>("Error", HttpStatus.BAD_REQUEST);
+		}
+		return null;
+	}
+	
 	@GetMapping("/findById/{id}")
 	public ResponseEntity<Object> findById(@PathVariable("id") int id) {
 		Evaluation ev = new Evaluation();
