@@ -17,17 +17,21 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fClientStudents.clients.WsSubjectsEvaluation;
 import com.fClientStudents.model.EvaluationResponse;
 import com.fClientStudents.model.SubjectResponse;
+import com.fClientStudents.service.SubjectEvaluationServ;
 
 @RestController
 @RequestMapping("/client")
 public class SubjectEvaluationRest {
+	
+	//Haciendo una inyeccion de dependencias en el cual se comunica con mi feign client 
 	@Autowired
-	WsSubjectsEvaluation wsSE;
+	SubjectEvaluationServ ses;
+	
 	//Metodos Para La entidad Subjects
 	@GetMapping("/subjects")
 	public ResponseEntity<Object> findAll(){
 		List<SubjectResponse> srList= new ArrayList<SubjectResponse>();
-		srList= wsSE.findAll();
+		srList= ses.showSubjects();
 		if(srList.size()>0) {
 			return new ResponseEntity<>(srList,HttpStatus.OK);
 		}else {
@@ -37,7 +41,7 @@ public class SubjectEvaluationRest {
 	
 	@GetMapping("/subjects/findById/{id}")
 	public ResponseEntity<Object> findById(@PathVariable Integer id) {
-		SubjectResponse sr=wsSE.findSubjectById(id);
+		SubjectResponse sr=ses.selectSubjectById(id);
 		if(null!=sr) {
 			return new ResponseEntity<>(sr,HttpStatus.OK);
 		}else {
@@ -47,7 +51,7 @@ public class SubjectEvaluationRest {
 	
 	@PostMapping("/subjects/addSubject")
 	public ResponseEntity<Object> addSubject(@RequestBody SubjectResponse sr){
-		SubjectResponse sres=wsSE.addSubject(sr);
+		SubjectResponse sres= ses.addSubject(sr);
 		if(null!= sres) {
 			return new ResponseEntity<>(sres,HttpStatus.OK);
 		}else {
@@ -56,7 +60,7 @@ public class SubjectEvaluationRest {
 	}
 	@PutMapping("/subjects/updateSubject")
 	public ResponseEntity<Object> updateSubject(@RequestBody SubjectResponse sr){
-		SubjectResponse sres=wsSE.updateSubject(sr);
+		SubjectResponse sres=ses.updateSubject(sr);
 		if(null!= sres) {
 			return new ResponseEntity<>(sres,HttpStatus.OK);
 		}else {
@@ -67,16 +71,16 @@ public class SubjectEvaluationRest {
 	@GetMapping("/evaluation")
 	public ResponseEntity<Object> findAllEvaluation(){
 		List<EvaluationResponse> evList= new ArrayList<EvaluationResponse>();
-		evList= wsSE.findAllEvaluation();
+		evList= ses.showEvaluation();
 		if(evList.size()>0) {
 			return new ResponseEntity<>(evList,HttpStatus.OK);
 		}else {
 			return new ResponseEntity<>("ERROR",HttpStatus.BAD_REQUEST);
 		}
 	}
-	@GetMapping("/evaluation/selectById/{id}")
+	@GetMapping("/evaluation/findById/{id}")
 	public ResponseEntity<Object> selectEvaluationById(@PathVariable Integer id){
-		EvaluationResponse er= wsSE.findEvaluationById(id);
+		EvaluationResponse er= ses.selectEvaluationById(id);
 		if(null!=er) {
 			return new ResponseEntity<>(er,HttpStatus.OK);
 		}else {
