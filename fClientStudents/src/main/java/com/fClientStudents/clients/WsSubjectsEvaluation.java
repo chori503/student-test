@@ -29,7 +29,7 @@ public interface WsSubjectsEvaluation {
 	
 	//////////////////////////////////seccion de evaluaciones
 	
-	@GetMapping("/evaluation")
+	@GetMapping("/evaluation/show")
 	public List<EvaluationResponse> findAllEvaluation();
 	
 	@GetMapping("/evaluation/findById/{id}")
