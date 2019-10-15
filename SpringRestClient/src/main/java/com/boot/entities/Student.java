@@ -58,7 +58,7 @@ public class Student implements Serializable {
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "date_birth")
-	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date dateBirth;
 	@Column(name = "state")
 	private Boolean state;

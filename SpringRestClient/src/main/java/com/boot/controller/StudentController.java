@@ -1,6 +1,7 @@
 package com.boot.controller;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -17,8 +18,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.boot.entities.Note;
 import com.boot.entities.Student;
+import com.boot.entities.Subject;
+import com.boot.models.NoteM;
 import com.boot.models.ResponseObject;
+import com.boot.models.StudentM;
+import com.boot.repo.SubjectRepo;
 import com.boot.service.StudentService;
 
 //mi apoi rest con su path
@@ -33,6 +39,13 @@ public class StudentController {
 	// servicio del estudiante
 	@Autowired
 	private StudentService service;
+	@Autowired
+	private SubjectRepo subRepo;
+	// lista de las entidades clones para no mandar las rpopia y evitar
+	// errores como siclos infinitos
+	private List<Subject> listSubjects;
+	private List<NoteM> listsNotesM;
+	private List<StudentM> listStudentM;
 
 	// metodo para encontrar todos los registros de estudiantes en el sistema
 	// produce application jSon con validaciones y en todo caso envia el response
@@ -41,12 +54,32 @@ public class StudentController {
 	@GetMapping(value = "/all", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> find() {
 		try {
+			listStudentM = new ArrayList<>();
+			listsNotesM = new ArrayList<>();
 			listStudents = service.findAll();
+			StudentM studentM;
+			// inicializo
 			if (listStudents.size() > 0) {
 				// si la lista esta llena la anexa y envia mensaje de exito con un ok de http
 				// status
+				// Dentro del for inicializo una entidad clon con los valores
+				// de la entidad real
+				for (Student e : listStudents) {
+					studentM = new StudentM(e);
+					NoteM noteM;
+					studentM.setNoteList(null);
+					if (e.getNoteList().size() > 0) {
+						for (Note n : e.getNoteList()) {
+							noteM = new NoteM(n);
+							listsNotesM.add(noteM);
+						}
+						studentM.setNoteList(listsNotesM);
+					}
+					listStudentM.add(studentM);
+					listsNotesM = new ArrayList<>();
+				}
 				response = new ResponseObject(new Timestamp(new Date().getTime()), HttpStatus.OK, "Lista Cargada!",
-						"studentApi/all", listStudents);
+						"studentApi/all", listStudentM);
 				return new ResponseEntity<Object>(response, HttpStatus.OK);
 			} else {
 				// sino esta llena envia que esta vacia y envia un bad request como respuesta
@@ -63,17 +96,59 @@ public class StudentController {
 		}
 	}
 
+	// rest basico de pruebas para ver los subjects almacenados
+	@GetMapping(value = "/allSubjects", produces = MediaType.APPLICATION_JSON_VALUE)
+	public List<Subject> findAllSubjects() {
+		listSubjects = new ArrayList<Subject>();
+		listSubjects = subRepo.findAll();
+		return listSubjects;
+	}
+
+	@GetMapping(value = "/allStudents", produces = MediaType.APPLICATION_JSON_VALUE)
+	public List<StudentM> findAllStudents() {
+		listStudentM = new ArrayList<>();
+		listsNotesM = new ArrayList<>();
+		listStudents = service.findAll();
+		StudentM studentM;
+		for (Student e : listStudents) {
+			studentM = new StudentM(e);
+			NoteM noteM;
+			studentM.setNoteList(null);
+			if (e.getNoteList().size() > 0) {
+				System.out.println("Entre aqui y es de: " + e.getNoteList().size());
+				for (Note n : e.getNoteList()) {
+					noteM = new NoteM(n);
+					listsNotesM.add(noteM);
+				}
+				studentM.setNoteList(listsNotesM);
+				listsNotesM = new ArrayList<>();
+			}
+			listStudentM.add(studentM);
+		}
+		return listStudentM;
+	}
+
 	// metodo para encontrar por un id un estudiante capturo el id y consulto un
 	// estudiante en base a ese id
 	// este metodo cuenta con el mismo tipo de validaciones que hago en el metodo de
 	// all
 	@GetMapping(value = "/find/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> findById(@PathVariable("id") Integer id) {
+		StudentM studentM = new StudentM();
+		NoteM noteM = new NoteM();
+		listsNotesM = new ArrayList<>();
+		// paso los valores de la entidad real a la clon
 		try {
 			students = service.findById(id);
 			if (students != null) {
+				studentM = new StudentM(students);
+				for (Note n : students.getNoteList()) {
+					noteM = new NoteM(n);
+					listsNotesM.add(noteM);
+				}
+				studentM.setNoteList(listsNotesM);
 				response = new ResponseObject(new Timestamp(new Date().getTime()), HttpStatus.OK, "Exito!",
-						"studentApi/find/" + id, students);
+						"studentApi/find/" + id, studentM);
 				return new ResponseEntity<Object>(response, HttpStatus.OK);
 			} else {
 				response = new ResponseObject(new Timestamp(new Date().getTime()), HttpStatus.BAD_REQUEST,

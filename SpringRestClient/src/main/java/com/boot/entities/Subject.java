@@ -16,6 +16,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 //entidad desde base de datos
 @Entity
 @Table(name = "subject")
@@ -41,6 +43,7 @@ public class Subject implements Serializable {
 	@Column(name = "date_removed")
 	@Temporal(TemporalType.DATE)
 	private Date dateRemoved;
+	@JsonIgnore
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "idSubject")
 	private List<Evaluation> evaluationList;
 

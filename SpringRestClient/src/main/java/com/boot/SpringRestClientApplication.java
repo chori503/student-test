@@ -19,5 +19,4 @@ public class SpringRestClientApplication implements CommandLineRunner {
 	public static void main(String[] args) {
 		SpringApplication.run(SpringRestClientApplication.class, args);
 	}
-
 }
