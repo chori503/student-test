@@ -1,9 +1,9 @@
 package com.boot.service;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
+//import java.util.ArrayList;
+//import java.util.List;
+//
+//import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.security.core.GrantedAuthority;
 //import org.springframework.security.core.authority.SimpleGrantedAuthority;
 //import org.springframework.security.core.userdetails.User;
@@ -12,8 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.boot.entities.Users;
-import com.boot.repo.UserRepo;
+//import com.boot.entities.Users;
+//import com.boot.repo.UserRepo;
 
 //Configuracion del service de usuario con interfaz de userDetailSerivce 
 //en esta interfaz sobre escribimos el metodo de por defecto en el cual
@@ -24,8 +24,8 @@ public class UserDetailsConfiguraciones
 // implements UserDetailsService
 {
 	// repositorio de usuario para consulta
-	@Autowired
-	private UserRepo repo;
+	// @Autowired
+	// private UserRepo repo;
 
 	// el metodo encuentra los usuarios por username es importante que no exitan
 	// usuarios con el username repetido

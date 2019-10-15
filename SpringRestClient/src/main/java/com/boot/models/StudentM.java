@@ -2,7 +2,6 @@
 package com.boot.models;
 
 import java.util.Date;
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 import com.boot.entities.Student;
@@ -48,7 +47,6 @@ public class StudentM {
 
 	// constructor a partir de la entidad real
 	public StudentM(Student student) {
-		SimpleDateFormat formato = new SimpleDateFormat();
 		this.id = student.getId();
 		this.nie = student.getNie();
 		this.firstName = student.getFirstName();

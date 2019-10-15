@@ -1,15 +1,10 @@
 package com.boot;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 //import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 //import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 //import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 //import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 //import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
-import com.boot.service.UserDetailsConfiguraciones;
 
 //Zona de beans con configuraciones de spring security le heredo la clase de configuraciones
 //aqui asignaremos usuarios desde base de datos y roles para permisos
@@ -19,8 +14,8 @@ public class SecurityConfiguration
 // extends WebSecurityConfigurerAdapter
 {
 	// Usuarios desde base de datos
-	@Autowired
-	private UserDetailsConfiguraciones userConfig;
+	// @Autowired
+	// private UserDetailsConfiguraciones userConfig;
 	// codificador
 	// @Autowired
 	// private BCryptPasswordEncoder encoder;
