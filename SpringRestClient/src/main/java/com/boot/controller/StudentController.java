@@ -6,9 +6,11 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,7 +29,7 @@ import com.boot.models.StudentM;
 import com.boot.repo.SubjectRepo;
 import com.boot.service.StudentService;
 
-//mi apoi rest con su path
+//mi api rest con su path
 @RestController
 @RequestMapping("/studentApi")
 public class StudentController {
@@ -52,11 +54,11 @@ public class StudentController {
 	// entity
 	// con una entidad y respuesta
 	@GetMapping(value = "/all", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Object> find() {
+	public ResponseEntity<Object> find(Pageable pageable) {
 		try {
 			listStudentM = new ArrayList<>();
 			listsNotesM = new ArrayList<>();
-			listStudents = service.findAll();
+			listStudents = service.findAll(pageable);
 			StudentM studentM;
 			// inicializo
 			if (listStudents.size() > 0) {
@@ -104,11 +106,16 @@ public class StudentController {
 		return listSubjects;
 	}
 
+	// modifique el metodo para aceptar paginacion y tamano del registro
+	// puedes pedir parametros de ?page=numero de pagina empieza en cero &
+	// size=tamano del
+	// valor del valor de la consulta
+	@Secured({ "ROLE_ADMIN", "ROLE_USER" })
 	@GetMapping(value = "/allStudents", produces = MediaType.APPLICATION_JSON_VALUE)
-	public List<StudentM> findAllStudents() {
+	public List<StudentM> findAllStudents(Pageable pageable) {
 		listStudentM = new ArrayList<>();
 		listsNotesM = new ArrayList<>();
-		listStudents = service.findAll();
+		listStudents = service.findAll(pageable);
 		StudentM studentM;
 		for (Student e : listStudents) {
 			studentM = new StudentM(e);
@@ -132,6 +139,7 @@ public class StudentController {
 	// estudiante en base a ese id
 	// este metodo cuenta con el mismo tipo de validaciones que hago en el metodo de
 	// all
+	@Secured("ROLE_ADMIN")
 	@GetMapping(value = "/find/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> findById(@PathVariable("id") Integer id) {
 		StudentM studentM = new StudentM();
@@ -167,6 +175,7 @@ public class StudentController {
 	// cambie el estado y
 	// en el metodo de all descartar los que tegan el estado en false
 	// validaciones estandares
+	@Secured("ROLE_ADMIN")
 	@DeleteMapping(value = "/delete/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> delete(@PathVariable("id") Integer id) {
 		Boolean respuesta = false;
@@ -192,6 +201,7 @@ public class StudentController {
 	// metodo save recive una entidad studiante y lo persistira con todas sus tablas
 	// relacionadas
 	// posee validaciones estandares
+	@Secured("ROLE_ADMIN")
 	@PostMapping(value = "/save", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> save(@RequestBody Student student) {
 		try {
@@ -212,6 +222,7 @@ public class StudentController {
 	// lo unico que estara actuara diferente debido a que posee un id solo
 	// modificara
 	// posee validaciones estandares
+	@Secured("ROLE_ADMIN")
 	@PutMapping(value = "/update", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> update(@RequestBody Student student) {
 		try {
@@ -226,5 +237,4 @@ public class StudentController {
 			return new ResponseEntity<Object>(response, HttpStatus.BAD_REQUEST);
 		}
 	}
-
 }

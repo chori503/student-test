@@ -8,7 +8,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.boot.entities.Role;
@@ -22,8 +22,8 @@ import com.boot.service.UserService;
 @SpringBootTest
 public class SpringRestClientApplicationTests {
 	// Codificador
-	// @Autowired
-	// private BCryptPasswordEncoder enconder;
+	@Autowired
+	private BCryptPasswordEncoder enconder;
 	@Autowired
 	private StudentService estudentService;
 	@Autowired
@@ -34,11 +34,10 @@ public class SpringRestClientApplicationTests {
 	// Persistirlos en base de datos con sus metodos save de service
 	@Test
 	public void save() {
-		Student student = new Student(null, "12345", "William", "Eduardo", "Rauda", "Campos", new Date());
+		Student student = new Student(null, "453566", "Marvin", "Ernesto", "Barahona", "Martinez", new Date());
 		Student stu = estudentService.save(student);
 
-		Users us = new Users(null, "WilliamOwO", /* enconder.encode( */"12345"/* ) */, true, null, null, null,
-				new Role(1));
+		Users us = new Users(null, "MarvinOwO", enconder.encode("12345"), true, null, null, null, new Role(1));
 		Users user = userService.saveUsuario(us);
 
 		// pruebas de jUnit compruebo si los parametros que envio son iguales a los que

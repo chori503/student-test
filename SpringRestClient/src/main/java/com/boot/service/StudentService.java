@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.boot.entities.Student;
@@ -41,10 +42,10 @@ public class StudentService {
 		}
 	}
 
-	public List<Student> findAll() {
+	public List<Student> findAll(Pageable pageable) {
 		try {
 			listStudent = new ArrayList<Student>();
-			listStudent = repo.findAll();
+			listStudent = repo.findAll(pageable).getContent();
 			return listStudent;
 		} catch (Exception e) {
 			e.printStackTrace();
